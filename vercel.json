@@ -1,0 +1,27 @@
+{
+  "version": 2,
+  "name": "javari-devdocs-scraper",
+  "builds": [
+    {
+      "src": "api/**/*.js",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "/api/$1"
+    }
+  ],
+  "crons": [
+    {
+      "path": "/api/scrape",
+      "schedule": "0 */6 * * *"
+    }
+  ],
+  "env": {
+    "NEXT_PUBLIC_SUPABASE_URL": "@supabase_url",
+    "SUPABASE_SERVICE_ROLE_KEY": "@supabase_service_role_key",
+    "CRON_SECRET": "@cron_secret"
+  }
+}
