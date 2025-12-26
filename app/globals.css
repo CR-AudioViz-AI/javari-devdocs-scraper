@@ -1,33 +1,835 @@
+/**
+ * CR AudioViz AI - Universal Mobile-First CSS
+ * 
+ * This file provides complete mobile responsiveness for all apps:
+ * - iOS Safari safe areas and notch support
+ * - Touch target sizing (48px minimum - WCAG 2.2 AA)
+ * - Form input sizing (16px prevents iOS zoom)
+ * - Responsive typography scale
+ * - Utility classes for mobile layouts
+ * - Dark mode support
+ * - Reduced motion support
+ * - Print styles
+ * 
+ * @version 2.0.0
+ * @timestamp Thursday, December 25, 2025
+ */
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* ============================================
+   CSS CUSTOM PROPERTIES - Mobile First
+   ============================================ */
 :root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+  /* Safe Areas for iOS */
+  --safe-area-top: env(safe-area-inset-top, 0px);
+  --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-area-left: env(safe-area-inset-left, 0px);
+  --safe-area-right: env(safe-area-inset-right, 0px);
+  
+  /* Touch Target Minimum */
+  --touch-target-min: 48px;
+  --touch-target-secondary: 44px;
+  
+  /* Spacing Scale (Mobile First) */
+  --space-xs: 0.25rem;   /* 4px */
+  --space-sm: 0.5rem;    /* 8px */
+  --space-md: 1rem;      /* 16px */
+  --space-lg: 1.5rem;    /* 24px */
+  --space-xl: 2rem;      /* 32px */
+  --space-2xl: 3rem;     /* 48px */
+  
+  /* Brand Colors */
+  --crav-blue: #2563eb;
+  --crav-green: #16a34a;
+  --crav-purple: #7c3aed;
+  --crav-gradient: linear-gradient(135deg, var(--crav-blue), var(--crav-green));
+  
+  /* Typography Scale */
+  --font-size-xs: 0.75rem;    /* 12px */
+  --font-size-sm: 0.875rem;   /* 14px */
+  --font-size-base: 1rem;     /* 16px */
+  --font-size-lg: 1.125rem;   /* 18px */
+  --font-size-xl: 1.25rem;    /* 20px */
+  --font-size-2xl: 1.5rem;    /* 24px */
+  --font-size-3xl: 1.875rem;  /* 30px */
+  --font-size-4xl: 2.25rem;   /* 36px */
+  
+  /* Border Radius */
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-full: 9999px;
+  
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+  
+  /* Z-Index Scale */
+  --z-dropdown: 50;
+  --z-sticky: 100;
+  --z-fixed: 200;
+  --z-modal-backdrop: 300;
+  --z-modal: 400;
+  --z-tooltip: 500;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
+/* ============================================
+   BASE STYLES - Mobile Optimized
+   ============================================ */
+
+/* Prevent iOS text size adjustment */
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Smooth scrolling with reduced motion support */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
   }
 }
 
+/* Use dynamic viewport height on mobile */
 body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+  min-height: 100vh;
+  min-height: 100dvh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
 }
 
+/* Prevent pull-to-refresh on mobile when not needed */
+body.no-pull-refresh {
+  overscroll-behavior-y: contain;
+}
+
+/* Lock body scroll when modal is open */
+body.modal-open,
+body.menu-open {
+  overflow: hidden;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+}
+
+/* ============================================
+   TOUCH TARGETS - 48px Minimum (WCAG 2.2 AA)
+   ============================================ */
+
+/* All interactive elements get minimum touch target */
+button,
+[role="button"],
+input[type="submit"],
+input[type="button"],
+input[type="reset"],
+.btn,
+.button {
+  min-height: var(--touch-target-min);
+  min-width: var(--touch-target-min);
+  touch-action: manipulation;
+  -webkit-touch-callout: none;
+  cursor: pointer;
+}
+
+/* Links that look like buttons */
+a.btn,
+a.button,
+.btn-link {
+  min-height: var(--touch-target-min);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Navigation links */
+nav a,
+.nav-link {
+  min-height: var(--touch-target-secondary);
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-sm) var(--space-md);
+}
+
+/* Icon buttons */
+.icon-btn,
+button[aria-label]:not([aria-label=""]) {
+  min-height: var(--touch-target-min);
+  min-width: var(--touch-target-min);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-sm);
+}
+
+/* ============================================
+   FORM INPUTS - Prevent iOS Zoom (16px min)
+   ============================================ */
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="tel"],
+input[type="url"],
+input[type="number"],
+input[type="search"],
+input[type="date"],
+input[type="time"],
+input[type="datetime-local"],
+textarea,
+select {
+  font-size: 16px !important; /* Prevents iOS zoom on focus */
+  min-height: var(--touch-target-min);
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-md);
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+/* Focus states - visible and accessible */
+input:focus,
+textarea:focus,
+select:focus,
+button:focus,
+a:focus {
+  outline: 2px solid var(--crav-blue);
+  outline-offset: 2px;
+}
+
+/* Remove default focus ring and use custom */
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+button:focus-visible,
+a:focus-visible {
+  outline: 2px solid var(--crav-blue);
+  outline-offset: 2px;
+}
+
+/* Checkbox and radio - larger touch targets */
+input[type="checkbox"],
+input[type="radio"] {
+  min-width: 24px;
+  min-height: 24px;
+  margin: var(--space-sm);
+}
+
+/* File inputs */
+input[type="file"] {
+  min-height: var(--touch-target-min);
+  padding: var(--space-sm);
+}
+
+/* ============================================
+   RESPONSIVE TYPOGRAPHY
+   ============================================ */
+
+/* Headings - Scale down on mobile */
+h1, .h1 {
+  font-size: clamp(1.75rem, 5vw, 3rem);
+  line-height: 1.2;
+}
+
+h2, .h2 {
+  font-size: clamp(1.5rem, 4vw, 2.25rem);
+  line-height: 1.25;
+}
+
+h3, .h3 {
+  font-size: clamp(1.25rem, 3vw, 1.75rem);
+  line-height: 1.3;
+}
+
+h4, .h4 {
+  font-size: clamp(1.125rem, 2.5vw, 1.5rem);
+  line-height: 1.35;
+}
+
+h5, .h5, h6, .h6 {
+  font-size: clamp(1rem, 2vw, 1.25rem);
+  line-height: 1.4;
+}
+
+/* Body text */
+p, .body-text {
+  font-size: var(--font-size-base);
+  line-height: 1.6;
+}
+
+/* Small text */
+small, .text-small {
+  font-size: var(--font-size-sm);
+}
+
+/* ============================================
+   SAFE AREA UTILITIES
+   ============================================ */
+
+/* Padding for safe areas */
+.pt-safe { padding-top: var(--safe-area-top); }
+.pb-safe { padding-bottom: var(--safe-area-bottom); }
+.pl-safe { padding-left: var(--safe-area-left); }
+.pr-safe { padding-right: var(--safe-area-right); }
+.px-safe { 
+  padding-left: var(--safe-area-left); 
+  padding-right: var(--safe-area-right); 
+}
+.py-safe { 
+  padding-top: var(--safe-area-top); 
+  padding-bottom: var(--safe-area-bottom); 
+}
+.p-safe {
+  padding-top: var(--safe-area-top);
+  padding-bottom: var(--safe-area-bottom);
+  padding-left: var(--safe-area-left);
+  padding-right: var(--safe-area-right);
+}
+
+/* Margin for safe areas */
+.mt-safe { margin-top: var(--safe-area-top); }
+.mb-safe { margin-bottom: var(--safe-area-bottom); }
+.ml-safe { margin-left: var(--safe-area-left); }
+.mr-safe { margin-right: var(--safe-area-right); }
+
+/* ============================================
+   MOBILE LAYOUT UTILITIES
+   ============================================ */
+
+/* Full viewport height accounting for mobile browser UI */
+.h-screen-safe {
+  height: 100vh;
+  height: 100dvh;
+}
+
+.min-h-screen-safe {
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+/* Container with mobile padding */
+.container-mobile {
+  width: 100%;
+  max-width: 100%;
+  padding-left: var(--space-md);
+  padding-right: var(--space-md);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@media (min-width: 640px) {
+  .container-mobile {
+    max-width: 640px;
+    padding-left: var(--space-lg);
+    padding-right: var(--space-lg);
+  }
+}
+
+@media (min-width: 768px) {
+  .container-mobile {
+    max-width: 768px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .container-mobile {
+    max-width: 1024px;
+    padding-left: var(--space-xl);
+    padding-right: var(--space-xl);
+  }
+}
+
+@media (min-width: 1280px) {
+  .container-mobile {
+    max-width: 1280px;
+  }
+}
+
+/* Stack on mobile, row on desktop */
+.stack-to-row {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+@media (min-width: 768px) {
+  .stack-to-row {
+    flex-direction: row;
+  }
+}
+
+/* Hide on mobile, show on desktop */
+.hide-mobile {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .hide-mobile {
+    display: block;
+  }
+  
+  .hide-mobile.flex {
+    display: flex;
+  }
+  
+  .hide-mobile.grid {
+    display: grid;
+  }
+}
+
+/* Show on mobile, hide on desktop */
+.show-mobile {
+  display: block;
+}
+
+@media (min-width: 768px) {
+  .show-mobile {
+    display: none;
+  }
+}
+
+/* ============================================
+   MOBILE NAVIGATION
+   ============================================ */
+
+/* Mobile menu button */
+.mobile-menu-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: var(--touch-target-min);
+  min-height: var(--touch-target-min);
+  padding: var(--space-sm);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+@media (min-width: 768px) {
+  .mobile-menu-btn {
+    display: none;
+  }
+}
+
+/* Mobile menu overlay */
+.mobile-menu-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: var(--z-modal-backdrop);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s, visibility 0.3s;
+}
+
+.mobile-menu-overlay.open {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Mobile menu panel */
+.mobile-menu-panel {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 85%;
+  max-width: 320px;
+  background: white;
+  z-index: var(--z-modal);
+  transform: translateX(-100%);
+  transition: transform 0.3s ease-out;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding-top: var(--safe-area-top);
+  padding-bottom: var(--safe-area-bottom);
+}
+
+.mobile-menu-panel.open {
+  transform: translateX(0);
+}
+
+/* Right-side mobile menu */
+.mobile-menu-panel.right {
+  left: auto;
+  right: 0;
+  transform: translateX(100%);
+}
+
+.mobile-menu-panel.right.open {
+  transform: translateX(0);
+}
+
+/* ============================================
+   MOBILE CARDS & LISTS
+   ============================================ */
+
+/* Card that's full-width on mobile */
+.card-mobile {
+  width: 100%;
+  background: white;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+}
+
+@media (min-width: 768px) {
+  .card-mobile {
+    max-width: 400px;
+  }
+}
+
+/* List with touch-friendly items */
+.touch-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.touch-list li {
+  min-height: var(--touch-target-min);
+  display: flex;
+  align-items: center;
+  padding: var(--space-sm) var(--space-md);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.touch-list li:last-child {
+  border-bottom: none;
+}
+
+/* ============================================
+   MOBILE SCROLLING
+   ============================================ */
+
+/* Horizontal scroll container */
+.scroll-x {
+  display: flex;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  gap: var(--space-md);
+  padding-bottom: var(--space-sm);
+}
+
+.scroll-x::-webkit-scrollbar {
+  display: none;
+}
+
+.scroll-x > * {
+  flex-shrink: 0;
+  scroll-snap-align: start;
+}
+
+/* Hide scrollbar utility */
+.scrollbar-hide {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Smooth momentum scrolling */
+.momentum-scroll {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+
+/* ============================================
+   MOBILE MODALS & OVERLAYS
+   ============================================ */
+
+/* Bottom sheet modal (mobile-friendly) */
+.bottom-sheet {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: white;
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+  z-index: var(--z-modal);
+  transform: translateY(100%);
+  transition: transform 0.3s ease-out;
+  max-height: 90vh;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding-bottom: var(--safe-area-bottom);
+}
+
+.bottom-sheet.open {
+  transform: translateY(0);
+}
+
+/* Bottom sheet drag handle */
+.bottom-sheet-handle {
+  width: 40px;
+  height: 4px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: var(--radius-full);
+  margin: var(--space-sm) auto var(--space-md);
+}
+
+/* Fullscreen modal for mobile */
+.modal-fullscreen-mobile {
+  position: fixed;
+  inset: 0;
+  background: white;
+  z-index: var(--z-modal);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding-top: var(--safe-area-top);
+  padding-bottom: var(--safe-area-bottom);
+}
+
+@media (min-width: 768px) {
+  .modal-fullscreen-mobile {
+    inset: 50% auto auto 50%;
+    transform: translate(-50%, -50%);
+    width: 90%;
+    max-width: 600px;
+    max-height: 90vh;
+    border-radius: var(--radius-xl);
+  }
+}
+
+/* ============================================
+   MOBILE BUTTONS
+   ============================================ */
+
+/* Primary button - mobile optimized */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--touch-target-min);
+  padding: var(--space-sm) var(--space-lg);
+  background: var(--crav-gradient);
+  color: white;
+  font-weight: 600;
+  border: none;
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: transform 0.1s, box-shadow 0.2s;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.btn-primary:active {
+  transform: scale(0.98);
+}
+
+/* Full width button on mobile */
+.btn-block-mobile {
+  width: 100%;
+}
+
+@media (min-width: 768px) {
+  .btn-block-mobile {
+    width: auto;
+  }
+}
+
+/* Floating action button */
+.fab {
+  position: fixed;
+  bottom: calc(var(--space-lg) + var(--safe-area-bottom));
+  right: var(--space-lg);
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-full);
+  background: var(--crav-gradient);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-lg);
+  z-index: var(--z-fixed);
+  cursor: pointer;
+  border: none;
+}
+
+/* ============================================
+   MOBILE IMAGES & MEDIA
+   ============================================ */
+
+/* Responsive images */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Aspect ratio containers */
+.aspect-video {
+  aspect-ratio: 16 / 9;
+}
+
+.aspect-square {
+  aspect-ratio: 1 / 1;
+}
+
+.aspect-portrait {
+  aspect-ratio: 3 / 4;
+}
+
+/* Object fit utilities */
+.object-cover {
+  object-fit: cover;
+}
+
+.object-contain {
+  object-fit: contain;
+}
+
+/* ============================================
+   REDUCED MOTION
+   ============================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ============================================
+   DARK MODE SUPPORT
+   ============================================ */
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.5);
+  }
+  
+  .mobile-menu-panel,
+  .bottom-sheet,
+  .modal-fullscreen-mobile,
+  .card-mobile {
+    background: #1f2937;
+    color: white;
+  }
+  
+  .touch-list li {
+    border-bottom-color: rgba(255, 255, 255, 0.1);
+  }
+}
+
+/* ============================================
+   PRINT STYLES
+   ============================================ */
+
+@media print {
+  .no-print,
+  .mobile-menu-btn,
+  .mobile-menu-overlay,
+  .mobile-menu-panel,
+  .bottom-sheet,
+  .fab {
+    display: none !important;
+  }
+  
+  body {
+    min-height: auto;
+  }
+  
+  .container-mobile {
+    max-width: 100%;
+    padding: 0;
+  }
+}
+
+/* ============================================
+   TAILWIND LAYER COMPONENTS
+   ============================================ */
+
+@layer components {
+  /* Touch-friendly button */
+  .touch-btn {
+    @apply min-h-[48px] min-w-[48px] inline-flex items-center justify-center px-4 py-2 rounded-lg font-medium transition-all;
+    touch-action: manipulation;
+  }
+  
+  /* Mobile input */
+  .mobile-input {
+    @apply w-full min-h-[48px] px-4 py-3 text-base border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500;
+    font-size: 16px !important;
+  }
+  
+  /* Mobile card */
+  .mobile-card {
+    @apply w-full bg-white rounded-xl shadow-md overflow-hidden;
+  }
+  
+  /* Responsive grid */
+  .responsive-grid {
+    @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6;
+  }
+  
+  /* Stack layout */
+  .stack {
+    @apply flex flex-col gap-4;
+  }
+  
+  /* Center content */
+  .center-content {
+    @apply flex items-center justify-center;
+  }
+}
+
+/* ============================================
+   TAILWIND LAYER UTILITIES  
+   ============================================ */
+
 @layer utilities {
-  .text-balance {
-    text-wrap: balance;
+  /* Touch action utilities */
+  .touch-pan-x {
+    touch-action: pan-x;
+  }
+  
+  .touch-pan-y {
+    touch-action: pan-y;
+  }
+  
+  .touch-none {
+    touch-action: none;
+  }
+  
+  /* Safe area margin utilities */
+  .m-safe {
+    margin: var(--safe-area-top) var(--safe-area-right) var(--safe-area-bottom) var(--safe-area-left);
+  }
+  
+  /* Min touch target */
+  .min-touch {
+    min-height: 48px;
+    min-width: 48px;
+  }
+  
+  /* No select on mobile */
+  .no-select {
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  
+  /* Hardware acceleration */
+  .gpu {
+    transform: translateZ(0);
+    will-change: transform;
   }
 }
