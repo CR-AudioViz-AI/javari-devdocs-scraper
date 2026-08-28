@@ -10,7 +10,8 @@
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.38.4",
-    "node-fetch": "^3.3.2"
+    "node-fetch": "^3.3.2",
+    "@craudioviz/platform-sdk": "git+https://github.com/CR-AudioViz-AI/platform-sdk.git"
   },
   "engines": {
     "node": ">=18.x"
