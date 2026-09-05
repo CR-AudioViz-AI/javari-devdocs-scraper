@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vercel dev",
     "build": "echo 'No build needed for serverless'",
-    "deploy": "vercel --prod"
+    "deploy": "vercel --prod",
+    "prebuild": "node scripts/audit-route-auth.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.38.4",
