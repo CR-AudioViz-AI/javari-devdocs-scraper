@@ -26,7 +26,7 @@ export async function POST(request: NextRequest) {
     let sourceId: string
 
     const { data: existingSource } = await supabaseAdmin
-      .from('knowledge_sources')
+      .from('javari_knowledge_sources')
       .select('id')
       .eq('url', 'https://devdocs.io')
       .single()
@@ -35,7 +35,7 @@ export async function POST(request: NextRequest) {
       sourceId = existingSource.id
     } else {
       const { data: newSource, error: createError } = await supabaseAdmin
-        .from('knowledge_sources')
+        .from('javari_knowledge_sources')
         .insert({
           name: 'DevDocs',
           source_type: 'documentation',
@@ -155,7 +155,7 @@ async function scrapeInBackground(
 
     // Update source last_scraped_at
     await supabaseAdmin
-      .from('knowledge_sources')
+      .from('javari_knowledge_sources')
       .update({
         last_scraped_at: new Date().toISOString(),
       })
