@@ -36,8 +36,8 @@ export interface Database {
           updated_at: string
           created_by: string
         }
-        Insert: Partial<Database['public']['Tables']['knowledge_sources']['Row']>
-        Update: Partial<Database['public']['Tables']['knowledge_sources']['Row']>
+        Insert: Partial<Database['public']['Tables']['javari_knowledge_sources']['Row']>
+        Update: Partial<Database['public']['Tables']['javari_knowledge_sources']['Row']>
       }
       knowledge_content: {
         Row: {
