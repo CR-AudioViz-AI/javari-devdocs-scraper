@@ -24,7 +24,7 @@ export async function GET(request: NextRequest) {
         .single()
 
       if (error) {
-        return NextResponse.json({ error: error.message }, { status: 404 })
+        return NextResponse.json({ error: 'The request could not be completed.', code: 'INTERNAL_ERROR' }, { status: 404 })
       }
 
       return NextResponse.json({
